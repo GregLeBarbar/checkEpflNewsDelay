@@ -1,0 +1,4 @@
+---
+# vars file for epfl.infoscience-exports
+newsdelay_nodejsb_port: 5602
+newsdelay_nodejsb_servicename: "search-inside-nodejsb"

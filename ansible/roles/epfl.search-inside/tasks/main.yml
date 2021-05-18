@@ -1,0 +1,121 @@
+- name: News delay nodejs_backend Image Stream
+  openshift:
+    state: latest
+    apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: newsdelay-nodejs
+      namespace: "{{openshift_namespace}}"
+      labels:
+        build: newsdelay-nodejs
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - annotations: null
+          from:
+            kind: DockerImage
+            name: 'newsdelay-nodejs:latest'
+          generation: 3
+          importPolicy: {}
+          name: latest
+          referencePolicy:
+            type: Source
+
+- name: News delay nodejs Build Config
+  openshift:
+    state: latest
+    apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: newsdelay-nodejs
+      namespace: "{{openshift_namespace}}"
+      labels:
+        build: newsdelay-nodejs
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'newsdelay-nodejs:latest'
+      runPolicy: Serial
+      source:
+        git:
+          uri: "https://github.com/GregLeBarbar/checkEpflNewsDelay"
+          ref: "feature/generate-log-for-kibana"
+        #contextDir: "docker_nodejsb"
+      strategy:
+        dockerStrategy:
+          forcePull: true
+          noCache: true
+        type: Docker
+  register: _openshift_image_newsdelay_nodejs
+ 
+- name: newsdelay-nodejs Deployment Config
+  openshift:
+    apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: newsdelay-nodejs
+      namespace: "{{openshift_namespace}}"
+    spec:
+      replicas: 1
+      selector:
+        deployment-config.name: newsdelay-nodejs
+      strategy:
+        activeDeadlineSeconds: 21600
+        resources: { }
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            deployment-config.name: newsdelay-nodejs
+        spec:
+          containers:
+            - env:
+              #- name: 'ELASTICSEARCH_URL'
+              #  value: 'http://search-inside-elastic.{{openshift_namespace}}.svc:9200'
+              #- name: 'ELASTICSEARCH_HOSTS'
+              #  value: 'http://search-inside-elastic.{{openshift_namespace}}.svc:9200'
+              image: 'docker-registry.default.svc:5000/{{openshift_namespace}}/newsdelay-nodejs:latest'
+              imagePullPolicy: Always
+              name: newsdelay-nodejs
+              resources: {}
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: { }
+        terminationGracePeriodSeconds: 30
+      triggers:
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+          - newsdelay-nodejs
+          from:
+            kind: ImageStreamTag
+            name: 'newsdelay-nodejs:latest'
+            namespace: "{{openshift_namespace}}"
+
+- name: newsdelay-nodejs-backend Service
+  openshift:
+    state: latest
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: "{{ newsdelay_nodejsb_servicename }}"
+      namespace: "{{openshift_namespace}}"
+    spec:
+      type: ClusterIP
+      ports:
+        - port: "{{ newsdelay_nodejsb_port }}"
+          protocol: TCP
+          targetPort: "{{ newsdelay_nodejsb_port }}"
+      selector:
+        deployment-config.name: newsdelay-nodejs
