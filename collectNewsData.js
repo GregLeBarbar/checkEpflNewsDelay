@@ -103,7 +103,8 @@ async function getJsonLogData(data) {
   logData["cache-control"] = data["cache-control"];
   logData["expect-ct"] = data["expect-ct"];
   logData["expect-ct"] = data["expect-ct"];
-  logData["news-delay"] = true;
+  logData["news-delay"] = data["delay"];
+  logData["news-delay"] = data["delay"];
 
   // All data for website call
   /*
