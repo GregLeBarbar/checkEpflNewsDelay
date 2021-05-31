@@ -128,7 +128,7 @@ async function main(cache) {
   let key0 = "apirest_" + newsFromApi.title;
   if (!cache.hasOwnProperty(key0)) {
     cache[key0] = newsFromApi["publish_date"];
-    
+    newsFromApi["delay"] = 0;
     let jsonlogData = await getJsonLogData(newsFromApi);
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
