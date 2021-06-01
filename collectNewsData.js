@@ -204,5 +204,8 @@ async function main(cache) {
 let cache = {};
 
 setInterval(() => {
-  main(cache);
+  try {
+    main(cache);
+  } catch (error) {
+  }
 }, 15000);
