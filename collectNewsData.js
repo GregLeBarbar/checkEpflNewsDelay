@@ -104,7 +104,7 @@ async function getJsonLogData(data) {
 
     logData["url"] = data["url"];
     logData["title"] = data["title"];
-    logData["call_api_date"] = data["call_api_date"];
+    logData["call-api-date"] = data["call_api_date"];
     logData["server"] = data["server"];
     logData["cf-cache-status"] = data["cf-cache-status"];
     logData["x-varnish-cache"] = data["x-varnish-cache"];
@@ -112,7 +112,7 @@ async function getJsonLogData(data) {
     logData["cache-control"] = data["cache-control"];
     logData["expect-ct"] = data["expect-ct"];
     logData["expect-ct"] = data["expect-ct"];
-    logData["cache_type"] = data["cache_type"]
+    logData["cache-type"] = data["cache_type"]
     logData["news-delay"] = data["delay"];
 
     // All data for website call
