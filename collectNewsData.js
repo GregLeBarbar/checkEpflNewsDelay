@@ -1,6 +1,7 @@
 let axios = require("axios");
 const cheerio = require("cheerio");
 
+/*
 function msToTime(duration) {
   var milliseconds = Math.floor((duration % 1000) / 100),
     seconds = Math.floor((duration / 1000) % 60),
@@ -12,7 +13,7 @@ function msToTime(duration) {
   seconds = seconds < 10 ? "0" + seconds : seconds;
 
   return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
-}
+}*/
 
 function getNewsRestApiUrl(withoutCache = true) {
   let newsRestApiUrl =
@@ -36,11 +37,16 @@ async function getLastFromAPI() {
     lastNews["url"] = newsRestApiUrl;
     lastNews["id"] = result.id;
     lastNews["title"] = result.title;
+
+//    const dec = (1000 * 60 * 60) * -2 // 2 hours
+//    let publish_date = new Date(result.publish_date).toUTCString();
+//    lastNews["publish_date"] = new Date(publish_date.getTime() + dec);
+
     lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
     lastNews["channel_name"] = result.channel.name;
     lastNews["server"] = response.headers.server;
     lastNews["cf-cache-status"] = response.headers["cf-cache-status"];
-    lastNews["call_api_date"] = response.headers.date;
+    lastNews["call_api_date"] = new Date(response.headers.date).toUTCString();
     lastNews["x-varnish-cache"] =
       response.headers["x-varnish-cache"] || "no-information";
     lastNews["cache-control"] =
@@ -104,7 +110,7 @@ async function getJsonLogData(data) {
 
     logData["url"] = data["url"];
     logData["title"] = data["title"];
-    logData["call-api-date"] = new Date(data["call_api_date"]).toUTCString();
+    logData["call-api-date"] = data["call_api_date"];
     logData["publish-date"] = data["publish_date"];
     logData["server"] = data["server"];
     logData["cf-cache-status"] = data["cf-cache-status"];
