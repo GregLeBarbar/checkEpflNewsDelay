@@ -38,11 +38,17 @@ async function getLastFromAPI() {
     lastNews["id"] = result.id;
     lastNews["title"] = result.title;
 
-//    const dec = (1000 * 60 * 60) * -2 // 2 hours
-//    let publish_date = new Date(result.publish_date).toUTCString();
-//    lastNews["publish_date"] = new Date(publish_date.getTime() + dec);
+    //const dec = (1000 * 60 * 60) * -2 // 2 hours
+    //let publish_date = new Date(result.publish_date).toUTCString();
+    //lastNews["publish_date"] = new Date(publish_date.getTime() + dec);
 
-    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
+    const date = new Date(result.publish_date).toUTCString();
+    const dec = (1000 * 60 * 60) * -2 // an hour
+
+    const _date = new Date(date)
+    lastNews["publish_date"] = new Date( _date.getTime() + dec )
+
+//    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
     lastNews["channel_name"] = result.channel.name;
     lastNews["server"] = response.headers.server;
     lastNews["cf-cache-status"] = response.headers["cf-cache-status"];
@@ -79,7 +85,7 @@ async function scrapeNewsFrom(url) {
   } catch (error) {}
   return news;
 }
-
+/*
 async function writeLog(jsonlogData) {
   const fs = require("fs");
   const os = require("os");
@@ -92,7 +98,7 @@ async function writeLog(jsonlogData) {
       return console.log(err);
     }
   });
-}
+}*/
 
 async function getJsonLogData(data) {
   let logData = {};
@@ -175,6 +181,7 @@ async function main(cache) {
     console.log(jsonlogData);
   }
 
+  /*
   // Call www - Page with cloudflare and varnish cache
   let urlWithVarnishAndCloudflare = "https://www.epfl.ch/campus/services/website/canari/actu-varnish-cloudflare/";
   let newsFromWww = await scrapeNewsFrom(urlWithVarnishAndCloudflare);
@@ -291,6 +298,7 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
+  */
 }
 
 let cache = {};
