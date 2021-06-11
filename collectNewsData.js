@@ -136,7 +136,7 @@ function calculateDiff(date1, date2) {
 
 async function main(cache) {
 
-  let debug = true;
+  let debug = false;
 
   // Call API REST
   let newsFromApi = await getLastFromAPI();
@@ -161,7 +161,7 @@ async function main(cache) {
     if (debug) {
       console.log("msDiff API REST: " + msDiff);
     }
-    
+
     newsFromApi["delay"] = msDiff;
     newsFromApi["cache_type"] = "rest_api";
 
