@@ -46,7 +46,7 @@ async function getLastFromAPI() {
     const dec = (1000 * 60 * 60) * -2 // an hour
 
     const _date = new Date(date)
-    lastNews["publish_date"] = new Date( _date.getTime() + dec )
+    lastNews["publish_date"] = new Date(_date.getTime() + dec).toUTCString();
 
 //    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
     lastNews["channel_name"] = result.channel.name;
@@ -181,7 +181,6 @@ async function main(cache) {
     console.log(jsonlogData);
   }
 
-  /*
   // Call www - Page with cloudflare and varnish cache
   let urlWithVarnishAndCloudflare = "https://www.epfl.ch/campus/services/website/canari/actu-varnish-cloudflare/";
   let newsFromWww = await scrapeNewsFrom(urlWithVarnishAndCloudflare);
@@ -298,7 +297,7 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
-  */
+  
 }
 
 let cache = {};
