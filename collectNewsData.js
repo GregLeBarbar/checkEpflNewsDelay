@@ -36,7 +36,7 @@ async function getLastFromAPI() {
     lastNews["url"] = newsRestApiUrl;
     lastNews["id"] = result.id;
     lastNews["title"] = result.title;
-    lastNews["publish_date"] = new Date(result.publish_date).toGMTString();
+    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
     lastNews["channel_name"] = result.channel.name;
     lastNews["server"] = response.headers.server;
     lastNews["cf-cache-status"] = response.headers["cf-cache-status"];
@@ -61,7 +61,7 @@ async function scrapeNewsFrom(url) {
 
     news["url"] = url;
     news["title"] = newsTitle;
-    news["call_api_date"] = new Date(response.headers.date).toGMTString();
+    news["call_api_date"] = new Date(response.headers.date).toUTCString();
     news["server"] = response.headers.server || "no-information";
     news["cf-cache-status"] =
       response.headers["cf-cache-status"] || "no-information";
@@ -96,7 +96,7 @@ async function getJsonLogData(data) {
     // - la vraie current date-time
     // - ajouter tous les champs: url, ...
 
-    let currentTime = new Date(Date.now()).toISOString();
+    let currentTime = new Date(Date.now()).toUTCString();
     logData["@timegenerated"] = currentTime;
     logData["priority"] = "INFO";
     logData["verb"] = "GET";
@@ -104,7 +104,7 @@ async function getJsonLogData(data) {
 
     logData["url"] = data["url"];
     logData["title"] = data["title"];
-    logData["call-api-date"] = new Date(data["call_api_date"]).toGMTString();
+    logData["call-api-date"] = new Date(data["call_api_date"]).toUTCString();
     logData["publish-date"] = data["publish_date"];
     logData["server"] = data["server"];
     logData["cf-cache-status"] = data["cf-cache-status"];
