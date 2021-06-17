@@ -108,7 +108,7 @@ async function getJsonLogData(data) {
     // - la vraie current date-time
     // - ajouter tous les champs: url, ...
 
-    let currentTime = new Date(Date.now()).toUTCString();
+    let currentTime = new Date(Date.now()).toISOString();
     logData["@timegenerated"] = currentTime;
     logData["priority"] = "INFO";
     logData["verb"] = "GET";
