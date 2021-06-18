@@ -43,12 +43,12 @@ async function getLastFromAPI() {
     //lastNews["publish_date"] = new Date(publish_date.getTime() + dec);
 
     const date = new Date(result.publish_date).toUTCString();
-    const dec = (1000 * 60 * 60) * -2 // an hour
+    const dec = 1000 * 60 * 60 * -2; // an hour
 
-    const _date = new Date(date)
+    const _date = new Date(date);
     lastNews["publish_date"] = new Date(_date.getTime() + dec).toUTCString();
 
-//    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
+    //    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
     lastNews["channel_name"] = result.channel.name;
     lastNews["server"] = response.headers.server;
     lastNews["cf-cache-status"] = response.headers["cf-cache-status"];
@@ -82,7 +82,8 @@ async function scrapeNewsFrom(url) {
       response.headers["x-varnish-cache"] || "no-information";
 
     //"x-varnish-cache-hits"
-    news["x-varnish-cache-hits"] = response.headers["x-varnish-cache-hits"] || "no-information";
+    news["x-varnish-cache-hits"] =
+      response.headers["x-varnish-cache-hits"] || "no-information";
     // Age
     news["age"] = response.headers["age"];
 
@@ -134,7 +135,7 @@ async function getJsonLogData(data) {
     logData["cache-control"] = data["cache-control"];
     logData["expect-ct"] = data["expect-ct"];
     logData["expect-ct"] = data["expect-ct"];
-    logData["cache-type"] = data["cache_type"]
+    logData["cache-type"] = data["cache_type"];
     logData["news-delay"] = data["delay"];
 
     // All data for website call
@@ -156,7 +157,6 @@ function calculateDiff(date1, date2) {
 }
 
 async function main(cache) {
-
   let debug = false;
 
   // Call API REST
@@ -166,7 +166,6 @@ async function main(cache) {
 
   let key0 = "apirest_" + newsFromApi.title;
   if (!cache.hasOwnProperty(key0)) {
-
     cache[key0] = publishedDateFromApi;
 
     if (debug) {
@@ -191,7 +190,8 @@ async function main(cache) {
   }
 
   // Call www - Page with cloudflare and varnish cache
-  let urlWithVarnishAndCloudflare = "https://www.epfl.ch/campus/services/website/canari/actu-varnish-cloudflare/";
+  let urlWithVarnishAndCloudflare =
+    "https://www.epfl.ch/campus/services/website/canari/actu-varnish-cloudflare/";
   let newsFromWww = await scrapeNewsFrom(urlWithVarnishAndCloudflare);
   newsFromWww["publish_date"] = publishedDateFromApi;
 
@@ -221,7 +221,8 @@ async function main(cache) {
   }
 
   // Call page without cloudflare and without varnish cache
-  let url2 = "https://servicedesk-sandbox.epfl.ch/actu-no-varnish-no-cloudflare/";
+  let url2 =
+    "https://servicedesk-sandbox.epfl.ch/actu-no-varnish-no-cloudflare/";
   let newsFromWithOutCache = await scrapeNewsFrom(url2);
   newsFromWithOutCache["publish_date"] = publishedDateFromApi;
 
@@ -237,7 +238,10 @@ async function main(cache) {
       console.log("DATE callApiDate: " + newsFromWithOutCache["call_api_date"]);
       console.log("DATE publishedDateFromApi: " + publishedDateFromApi);
     }
-    msDiff = calculateDiff(newsFromWithOutCache["call_api_date"], publishedDateFromApi);
+    msDiff = calculateDiff(
+      newsFromWithOutCache["call_api_date"],
+      publishedDateFromApi
+    );
     if (debug) {
       console.log("msDiff novarnish_nocloudflare: " + msDiff);
     }
@@ -248,9 +252,9 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
-  
+
   // Call page with cloudflare and without varnish cache
-  
+
   let url3 =
     "https://www.epfl.ch/campus/services/website/canari/actu-no-varnish-cloudflare/";
   let newsFromWithOutVarnish = await scrapeNewsFrom(url3);
@@ -265,10 +269,15 @@ async function main(cache) {
       console.log("--------------------------------------------------");
       console.log("novarnish_cloudflare");
 
-      console.log("DATE callApiDate: " + newsFromWithOutVarnish["call_api_date"]);
+      console.log(
+        "DATE callApiDate: " + newsFromWithOutVarnish["call_api_date"]
+      );
       console.log("DATE publishedDateFromApi: " + publishedDateFromApi);
     }
-    msDiff = calculateDiff(newsFromWithOutVarnish["call_api_date"], publishedDateFromApi);
+    msDiff = calculateDiff(
+      newsFromWithOutVarnish["call_api_date"],
+      publishedDateFromApi
+    );
     if (debug) {
       console.log("msDiff novarnish_cloudflare: " + msDiff);
     }
@@ -293,10 +302,16 @@ async function main(cache) {
       console.log("--------------------------------------------------");
       console.log("varnish_nocloudflare");
 
-      console.log("DATE callApiDate: " + new Date(newsFromWithOutCloudflare["call_api_date"]));
+      console.log(
+        "DATE callApiDate: " +
+          new Date(newsFromWithOutCloudflare["call_api_date"])
+      );
       console.log("DATE publishedDateFromApi: " + publishedDateFromApi);
     }
-    msDiff = calculateDiff(newsFromWithOutCloudflare["call_api_date"], publishedDateFromApi);
+    msDiff = calculateDiff(
+      newsFromWithOutCloudflare["call_api_date"],
+      publishedDateFromApi
+    );
     if (debug) {
       console.log("msDiff varnish_nocloudflare: " + msDiff);
     }
@@ -306,7 +321,6 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
-  
 }
 
 let cache = {};
