@@ -66,6 +66,7 @@ async function scrapeNewsFrom(url) {
   let news = {};
   try {
     const response = await axios.get(url);
+
     let $ = cheerio.load(response.data);
 
     //class="fullwidth-teaser-title"
@@ -79,6 +80,12 @@ async function scrapeNewsFrom(url) {
       response.headers["cf-cache-status"] || "no-information";
     news["x-varnish-cache"] =
       response.headers["x-varnish-cache"] || "no-information";
+
+    //"x-varnish-cache-hits"
+    news["x-varnish-cache-hits"] = response.headers["x-varnish-cache-hits"] || "no-information";
+    // Age
+    news["age"] = response.headers["age"];
+
     news["cache-control"] =
       response.headers["cache-control"] || "no-information";
     news["expect-ct"] = response.headers["expect-ct"] || "no-information";
@@ -121,7 +128,9 @@ async function getJsonLogData(data) {
     logData["server"] = data["server"];
     logData["cf-cache-status"] = data["cf-cache-status"];
     logData["x-varnish-cache"] = data["x-varnish-cache"];
+    logData["x-varnish-cache-hits"] = data["x-varnish-cache-hits"];
 
+    logData["age"] = data["age"];
     logData["cache-control"] = data["cache-control"];
     logData["expect-ct"] = data["expect-ct"];
     logData["expect-ct"] = data["expect-ct"];
@@ -181,7 +190,6 @@ async function main(cache) {
     console.log(jsonlogData);
   }
 
-  /*
   // Call www - Page with cloudflare and varnish cache
   let urlWithVarnishAndCloudflare = "https://www.epfl.ch/campus/services/website/canari/actu-varnish-cloudflare/";
   let newsFromWww = await scrapeNewsFrom(urlWithVarnishAndCloudflare);
@@ -210,7 +218,7 @@ async function main(cache) {
     let jsonlogData = await getJsonLogData(newsFromWww);
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
-  }*/
+  }
 
   // Call page without cloudflare and without varnish cache
   let url2 = "https://servicedesk-sandbox.epfl.ch/actu-no-varnish-no-cloudflare/";
@@ -240,7 +248,7 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
-  /*
+  
   // Call page with cloudflare and without varnish cache
   
   let url3 =
@@ -270,7 +278,6 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
-  */
 
   // Call page without cloudflare and with varnish cache
   let url4 = "https://servicedesk-sandbox.epfl.ch/actu-varnish-no-cloudflare/";
