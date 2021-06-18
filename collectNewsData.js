@@ -181,6 +181,7 @@ async function main(cache) {
     console.log(jsonlogData);
   }
 
+  /*
   // Call www - Page with cloudflare and varnish cache
   let urlWithVarnishAndCloudflare = "https://www.epfl.ch/campus/services/website/canari/actu-varnish-cloudflare/";
   let newsFromWww = await scrapeNewsFrom(urlWithVarnishAndCloudflare);
@@ -209,7 +210,7 @@ async function main(cache) {
     let jsonlogData = await getJsonLogData(newsFromWww);
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
-  }
+  }*/
 
   // Call page without cloudflare and without varnish cache
   let url2 = "https://servicedesk-sandbox.epfl.ch/actu-no-varnish-no-cloudflare/";
@@ -239,7 +240,7 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
-
+  /*
   // Call page with cloudflare and without varnish cache
   
   let url3 =
@@ -269,6 +270,7 @@ async function main(cache) {
     console.log(jsonlogData);
     //await writeLog(jsonlogData);
   }
+  */
 
   // Call page without cloudflare and with varnish cache
   let url4 = "https://servicedesk-sandbox.epfl.ch/actu-varnish-no-cloudflare/";
