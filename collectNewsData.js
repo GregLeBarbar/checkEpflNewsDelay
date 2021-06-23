@@ -43,7 +43,7 @@ async function getLastFromAPI() {
 
     let publishDateInTitle = result.title.substring(9, 25).replace(" ", "T");
     
-    if (result.publish_date.startsWith(publishDateInTitle)) {
+    if (!result.publish_date.startsWith(publishDateInTitle)) {
       console.log("ERROR !!!");
       console.log("Title: " + result.title);
       console.log("Publish date: " + result.publish_date);
