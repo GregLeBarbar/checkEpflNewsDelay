@@ -1,6 +1,8 @@
 let axios = require("axios");
 const cheerio = require("cheerio");
 
+let debug = false;
+
 /*
 function msToTime(duration) {
   var milliseconds = Math.floor((duration % 1000) / 100),
@@ -34,21 +36,45 @@ async function getLastFromAPI() {
     //console.log(response.headers);
     result = response.data.results[0];
 
+    if (debug) {
+      console.log("Title: " + result.title);
+      console.log("Publish date: " + result.publish_date);
+    }
+
+    let publishDateInTitle = result.title.substring(9, 28).replace(" ", "T");
+    
+    if (publishDateInTitle != result.publish_date) {
+      console.log("ERROR !!!");
+      console.log("Title: " + result.title);
+      console.log("Publish date: " + result.publish_date);
+      console.log("publishDateInTitle: " + publishDateInTitle);
+
+      setTimeout(function(){
+        // Do nothing
+        let veritas = 42;
+      }, 2000);//wait 2 seconds
+      
+      let response = await axios.get(newsRestApiUrl);
+      //console.log(response.headers);
+      result = response.data.results[0];
+
+      console.log("Mieux ???");
+      console.log("Title: " + result.title);
+      console.log("Publish date: " + result.publish_date);
+      console.log("publishDateInTitle: " + publishDateInTitle);
+    }
+
+
     lastNews["url"] = newsRestApiUrl;
     lastNews["id"] = result.id;
     lastNews["title"] = result.title;
 
-    //const dec = (1000 * 60 * 60) * -2 // 2 hours
-    //let publish_date = new Date(result.publish_date).toUTCString();
-    //lastNews["publish_date"] = new Date(publish_date.getTime() + dec);
-
     const date = new Date(result.publish_date).toUTCString();
-    const dec = 1000 * 60 * 60 * -2; // an hour
+    const dec = 1000 * 60 * 60 * -2; // 2 hours
 
     const _date = new Date(date);
     lastNews["publish_date"] = new Date(_date.getTime() + dec).toUTCString();
 
-    //    lastNews["publish_date"] = new Date(result.publish_date).toUTCString();
     lastNews["channel_name"] = result.channel.name;
     lastNews["server"] = response.headers.server;
     lastNews["cf-cache-status"] = response.headers["cf-cache-status"];
@@ -93,20 +119,6 @@ async function scrapeNewsFrom(url) {
   } catch (error) {}
   return news;
 }
-/*
-async function writeLog(jsonlogData) {
-  const fs = require("fs");
-  const os = require("os");
-
-  const path =
-    "/home/greg/workspace-idevfsd/collectNewsData/ws_call_log.delay-news.log";
-
-  fs.writeFile(path, jsonlogData + os.EOL, { flag: "a" }, function (err) {
-    if (err) {
-      return console.log(err);
-    }
-  });
-}*/
 
 async function getJsonLogData(data) {
   let logData = {};
@@ -138,15 +150,6 @@ async function getJsonLogData(data) {
     logData["cache-type"] = data["cache_type"];
     logData["news-delay"] = data["delay"];
 
-    // All data for website call
-    /*
-    logData["localcache"] = "hit";
-    logData["src"] = "https://www.epfl.ch/fr";
-    logData["targethost"] = "https://memento.epfl.ch";
-    logData["targetpath"] = "/api/v1/mementos/1/events/";
-    logData["targetquery"] = "format=json&lang=fr,en&limit=5&period=upcoming";
-    logData["responsetime"] = 0;
-    */
   } catch (error) {}
 
   return JSON.stringify(logData);
@@ -157,7 +160,7 @@ function calculateDiff(date1, date2) {
 }
 
 async function main(cache) {
-  let debug = false;
+  
 
   // Call API REST
   let newsFromApi = await getLastFromAPI();
