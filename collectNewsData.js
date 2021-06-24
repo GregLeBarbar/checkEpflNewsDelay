@@ -49,19 +49,19 @@ async function getLastFromAPI() {
       console.log("Publish date: " + result.publish_date);
       console.log("publishDateInTitle: " + publishDateInTitle);
 
-      setTimeout(function(){
-        // Do nothing
-        let veritas = 42;
-      }, 2000);//wait 2 seconds
-      
-      let response = await axios.get(newsRestApiUrl);
-      //console.log(response.headers);
-      result = response.data.results[0];
+      setTimeout(async function () {
+        let response = await axios.get(newsRestApiUrl);
+        //console.log(response.headers);
+        result = response.data.results[0];
 
-      console.log("Mieux ???");
-      console.log("Title: " + result.title);
-      console.log("Publish date: " + result.publish_date);
-      console.log("publishDateInTitle: " + publishDateInTitle);
+        console.log("Mieux ???");
+        console.log("Title: " + result.title);
+        console.log("Publish date: " + result.publish_date);
+        console.log("publishDateInTitle: " + publishDateInTitle);
+      }, 1000);//wait 1 second
+      
+    } else {
+      console.log("OK !!!");
     }
 
 
